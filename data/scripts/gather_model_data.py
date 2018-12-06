@@ -15,7 +15,7 @@ def get_stock_data(symbol, time='TIME_SERIES_DAILY'):
 
     r = requests.get('https://www.alphavantage.co/query?', params=payload)
     responses = r.json()
-    print(responses)
+
     file_dir = os.path.dirname(os.path.realpath('__file__'))
 
     print('Gathering data for '+symbol)
@@ -95,6 +95,28 @@ def get_fx_data(from_currency, to_currency, time='FX_DAILY'):
                     writer.writerow(fields)
     return True
 
+def get_gold_data():
+    
+    r = requests.get('https://www.quandl.com/api/v3/datasets/WGC/GOLD_DAILY_CAD.json')
+    responses = r.json()
+
+    file_dir = os.path.dirname(os.path.realpath('__file__'))
+
+    print('Gathering data for Gold')
+    
+    with open(os.path.join(file_dir, '../GOLD.csv'), 'w') as f:
+        writer = csv.writer(f)
+            
+        #write header
+        fields=['date', 'price']
+        writer.writerow(fields)
+
+        for date, price in responses['dataset']['data']:
+            fields=[date, price]
+            writer.writerow(fields)
+
+    return True
+
 
 if __name__ == '__main__':
     #gather crypto data
@@ -102,11 +124,13 @@ if __name__ == '__main__':
     time.sleep(12)
 
     #gather fx data
-    get_fx_data('CNY', 'USD')
+    get_fx_data('CNY', 'CAD')
     time.sleep(12)
-    get_fx_data('RUB', 'USD')
+    get_fx_data('RUB', 'CAD')
     time.sleep(12)
-    get_fx_data('INR', 'USD')
+    get_fx_data('INR', 'CAD')
+    time.sleep(12)
+    get_fx_data('USD', 'CAD')
     time.sleep(12)
 
     #gather stock data
@@ -119,3 +143,7 @@ if __name__ == '__main__':
     get_stock_data('ABX') #Barrick Gold Corp
     time.sleep(12)
     get_stock_data('BVN') #Compania de Minas Buenaventura
+
+    #gather gold data
+    get_gold_data()
+    
