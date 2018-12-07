@@ -27,7 +27,7 @@ def get_stock_data(symbol, time='TIME_SERIES_DAILY'):
                 writer = csv.writer(f)
 
                 #write header
-                fields=['date', 'open', 'close', 'high', 'low', 'volume']
+                fields=['date', symbol+'_open',  symbol+'_close',  symbol+'_high',  symbol+'_low',  symbol+'_volume']
                 writer.writerow(fields)
 
                 for date, data in dictionary.iteritems():
@@ -57,7 +57,7 @@ def get_crypto_data(symbol, time='DIGITAL_CURRENCY_DAILY'):
                 writer = csv.writer(f)
                 
                 #write header
-                fields=['date', 'open_cny', 'open_usd', 'close_cny', 'close_usd', 'high_cny', 'high_usd', 'low_cny', 'low_usd', 'volume', 'marketcap_USD']
+                fields=['date',  symbol+'_open_cny',  symbol+'_open_usd',  symbol+'_close_cny',  symbol+'_close_usd',  symbol+'_high_cny',  symbol+'_high_usd',  symbol+'_low_cny',  symbol+'_low_usd',  symbol+'_volume',  symbol+'_marketcap_USD']
                 writer.writerow(fields)
 
                 for date, data in dictionary.iteritems():
@@ -87,7 +87,7 @@ def get_fx_data(from_currency, to_currency, time='FX_DAILY'):
                 writer = csv.writer(f)
                 
                 #write header
-                fields=['date', 'open', 'high', 'low', 'close']
+                fields=['date', from_currency+to_currency+'_open', from_currency+to_currency+'_high', from_currency+to_currency+'_low', from_currency+to_currency+'_close']
                 writer.writerow(fields)
 
                 for date, data in dictionary.iteritems():
@@ -101,34 +101,36 @@ def get_gold_data():
     responses = r.json()
 
     file_dir = os.path.dirname(os.path.realpath('__file__'))
-
+    
     print('Gathering data for Gold')
     
     with open(os.path.join(file_dir, '../GOLD.csv'), 'w') as f:
         writer = csv.writer(f)
             
         #write header
-        fields=['date', 'price']
+        fields=['date', 'gold_price']
         writer.writerow(fields)
 
         for date, price in responses['dataset']['data']:
             fields=[date, price]
             writer.writerow(fields)
-
     return True
 
 
 if __name__ == '__main__':
+    #clean up old csv files
+    os.remove('*.csv')
+   
     #gather crypto data
     get_crypto_data('BTC')
     time.sleep(12)
 
     #gather fx data
-    get_fx_data('CNY', 'CAD')
+    get_fx_data('CNY', 'USD')
     time.sleep(12)
-    get_fx_data('RUB', 'CAD')
+    get_fx_data('RUB', 'USD')
     time.sleep(12)
-    get_fx_data('INR', 'CAD')
+    get_fx_data('INR', 'USD')
     time.sleep(12)
     get_fx_data('USD', 'CAD')
     time.sleep(12)
@@ -143,7 +145,7 @@ if __name__ == '__main__':
     get_stock_data('ABX') #Barrick Gold Corp
     time.sleep(12)
     get_stock_data('BVN') #Compania de Minas Buenaventura
-
+    
     #gather gold data
     get_gold_data()
     
