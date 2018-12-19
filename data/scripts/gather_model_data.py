@@ -119,7 +119,7 @@ def get_gold_data():
 
 if __name__ == '__main__':
     #clean up old csv files
-    os.remove('*.csv')
+    #os.remove('/*.csv')
    
     #gather crypto data
     get_crypto_data('BTC')
